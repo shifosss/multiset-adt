@@ -8,7 +8,16 @@ public abstract class MultiSet {
      *
      * @param item the item to add
      */
-    abstract void add(Integer item);
 
-    // TODO finish adding abstract methods to fully describe what it means to be a MultiSet.
+    public abstract void add(Integer item);
+
+    public abstract void remove(Integer item);
+
+    public abstract int count(Integer item);
+
+    public abstract boolean contains(Integer item);
+
+    public abstract boolean isEmpty();
+
+    public abstract int size();
 }
