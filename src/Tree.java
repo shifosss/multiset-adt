@@ -1,7 +1,4 @@
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Random;
+import java.util.*;
 
 public class Tree {
     private Integer root = null;
@@ -9,13 +6,14 @@ public class Tree {
 
     public Tree(Integer root, ArrayList<Tree> subtrees) {
         this.root = root;
-        if (subtrees == null) {
-            this.subtrees = new ArrayList<>();
-        } else {
-            this.subtrees = subtrees;
-        }
+        this.subtrees = Objects.requireNonNullElseGet(subtrees, ArrayList::new);
     }
-    // TODO complete this Tree class to replicate the implementation from the Tree class in adts.py
+
+    public Tree() {
+        this.root = null;
+        this.subtrees = new ArrayList<>();
+    }
+
     public boolean is_empty() {
         return this.root == null;
     }
@@ -23,8 +21,7 @@ public class Tree {
     public int __len__() {
         if (this.is_empty()) {
             return 0;
-        }
-        else {
+        } else {
             int size = 1;
             for (Tree subtree : this.subtrees) {
                 size += subtree.__len__();
@@ -36,8 +33,7 @@ public class Tree {
     public int count(int item) {
         if (this.is_empty()) {
             return 0;
-        }
-        else {
+        } else {
             int num = 0;
             if (this.root == item) {
                 num += 1;
@@ -56,8 +52,7 @@ public class Tree {
     private String str_indented(int depth) {
         if (this.is_empty()) {
             return "";
-        }
-        else {
+        } else {
             String s = "  ".repeat(depth) + (this.root.toString()) + '\n';
             for (Tree subtree : this.subtrees) {
                 s += subtree.str_indented(depth + 1);
@@ -69,8 +64,7 @@ public class Tree {
     public double average() {
         if (this.is_empty()) {
             return 0.0;
-        }
-        else {
+        } else {
             int total = this.average_helper().get(0);
             int count = this.average_helper().get(1);
             return (double) total / count;
@@ -79,10 +73,9 @@ public class Tree {
 
     private List<Integer> average_helper() {
         if (this.is_empty()) {
-            List<Integer> lst = Arrays.asList(0,0);
+            List<Integer> lst = Arrays.asList(0, 0);
             return lst;
-        }
-        else {
+        } else {
             int total = this.root;
             int size = 1;
             for (Tree subtree : this.subtrees) {
@@ -91,18 +84,16 @@ public class Tree {
                 total += subtree_total;
                 size += subtree_size;
             }
-            return Arrays.asList(total,size);
+            return Arrays.asList(total, size);
         }
     }
 
     public boolean __eq__(Tree other) {
         if (this.is_empty() && other.is_empty()) {
             return true;
-        }
-        else if (this.is_empty() || other.is_empty()) {
+        } else if (this.is_empty() || other.is_empty()) {
             return false;
-        }
-        else {
+        } else {
             if (this.root != other.root) {
                 return false;
             }
@@ -119,8 +110,7 @@ public class Tree {
         }
         if (this.root == item) {
             return true;
-        }
-        else {
+        } else {
             for (Tree subtree : this.subtrees) {
                 if (subtree.__contains__(item)) {
                     return true;
@@ -133,11 +123,9 @@ public class Tree {
     public List<Integer> leaves() {
         if (this.is_empty()) {
             return new ArrayList<>();
-        }
-        else if (this.subtrees.size() == 0) {
+        } else if (this.subtrees.size() == 0) {
             return Arrays.asList(this.root);
-        }
-        else {
+        } else {
             List<Integer> leaves = new ArrayList<>();
             for (Tree subtree : this.subtrees) {
                 leaves.addAll(subtree.leaves());
@@ -149,41 +137,35 @@ public class Tree {
     public void insert(int item) {
         if (this.is_empty()) {
             this.root = item;
-        }
-        else if (this.subtrees.size() == 0) {
+        } else if (this.subtrees.size() == 0) {
             this.subtrees = new ArrayList<>();
             this.subtrees.add(new Tree(item, new ArrayList<>()));
-        }
-        else {
+        } else {
             Random rd = new Random();
             if (rd.nextInt(3) + 1 == 3) {
                 this.subtrees.add(new Tree(item, new ArrayList<>()));
-            }
-            else {
+            } else {
                 int subtree_index = rd.nextInt(0, this.subtrees.size() - 1);
                 this.subtrees.get(subtree_index).insert(item);
             }
         }
     }
-    public boolean delete_item(int item){
-        if (this.is_empty()){
+
+    public boolean delete_item(int item) {
+        if (this.is_empty()) {
             return false;
-        }
-        else if (this.root == item){
+        } else if (this.root == item) {
             this.delete_root();
             return true;
-        }
-        else{
-            for (Tree subtree: this.subtrees) {
+        } else {
+            for (Tree subtree : this.subtrees) {
                 boolean deleted = subtree.delete_item(item);
-                if (deleted && subtree.is_empty()){
+                if (deleted && subtree.is_empty()) {
                     this.subtrees.remove(subtree);
                     return true;
-                }
-                else if (deleted){
+                } else if (deleted) {
                     return true;
-                }
-                else{
+                } else {
                     continue;
                 }
             }
@@ -192,25 +174,23 @@ public class Tree {
     }
 
     private void delete_root() {
-        if (this.subtrees == null){
+        if (this.subtrees == null) {
             this.root = null;
-        }
-        else{
+        } else {
             Tree chosen_subtree = this.subtrees.remove(this.subtrees.size() - 1);
             this.root = chosen_subtree.root;
             this.subtrees.addAll(chosen_subtree.subtrees);
         }
     }
 
-    private int extract_leaf(){
-        if (this.subtrees == null){
+    private int extract_leaf() {
+        if (this.subtrees == null) {
             int old_root = this.root;
             this.root = null;
             return old_root;
-        }
-        else{
+        } else {
             int leaf = this.subtrees.get(0).extract_leaf();
-            if (this.subtrees.get(0).is_empty()){
+            if (this.subtrees.get(0).is_empty()) {
                 this.subtrees.remove(this.subtrees.size() - 1);
             }
             return leaf;
@@ -218,16 +198,14 @@ public class Tree {
     }
 
     public boolean insert_child(int item, int parent) {
-        if (this.is_empty()){
+        if (this.is_empty()) {
             return false;
-        }
-        else if (this.root == parent){
+        } else if (this.root == parent) {
             this.subtrees.add(new Tree(item, null));
             return true;
-        }
-        else{
-            for (Tree subtree: this.subtrees){
-                if (subtree.insert_child(item, parent)){
+        } else {
+            for (Tree subtree : this.subtrees) {
+                if (subtree.insert_child(item, parent)) {
                     return true;
                 }
             }

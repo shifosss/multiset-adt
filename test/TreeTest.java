@@ -16,4 +16,9 @@ public class TreeTest {
         assertTrue(true);
     }
 
+    public static void main(String[] args) {
+        // Run the tests
+        org.junit.runner.JUnitCore.main(TreeTest.class.getName());
+    }
+
 }

@@ -9,27 +9,27 @@ public class Main {
         List<Integer> items_added = new ArrayList<>();
         Random rd = new Random();
 
-        for (int i = 0; i < n; i++){
+        for (int i = 0; i < n; i++) {
             int x = rd.nextInt(0, 100);
             my_input.add(x);
             items_added.add(x);
         }
 
-    // sanity check that we added n items
+        // sanity check that we added n items
         assert my_input.size() == n;
 
         double start = System.currentTimeMillis() / 1000.0;
 
-        for (int x : items_added){
+        for (int x : items_added) {
             my_input.remove(x);
         }
 
         double end = System.currentTimeMillis() / 1000.0;
 
-    // sanity check that we successfully removed all the items we had added!
+        // sanity check that we successfully removed all the items we had added!
         assert my_input.isEmpty();
 
-    // just print a quick summary of what we just ran
+        // just print a quick summary of what we just ran
         System.out.printf("%5d ", n);
         System.out.print(my_input.getClass());
         System.out.printf(" %.6f\n", end - start);
@@ -52,8 +52,8 @@ public class Main {
         multisets.add(tree_multiset);
         multisets.add(array_list_multiset);
         multisets.add(link_list_multiset);
-        for (MultiSet multiset : multisets){
-            for (int n : testcase){
+        for (MultiSet multiset : multisets) {
+            for (int n : testcase) {
                 profileMultiSet(multiset, n);
             }
         }
