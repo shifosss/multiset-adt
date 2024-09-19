@@ -5,7 +5,7 @@ import java.util.Random;
 
 public class Tree {
     private Integer root = null;
-    private List<Tree> subtrees;
+    private ArrayList<Tree> subtrees;
 
     public Tree(Integer root, ArrayList<Tree> subtrees) {
         this.root = root;
@@ -163,6 +163,75 @@ public class Tree {
                 int subtree_index = rd.nextInt(0, this.subtrees.size() - 1);
                 this.subtrees.get(subtree_index).insert(item);
             }
+        }
+    }
+    public boolean delete_item(int item){
+        if (this.is_empty()){
+            return false;
+        }
+        else if (this.root == item){
+            this.delete_root();
+            return true;
+        }
+        else{
+            for (Tree subtree: this.subtrees) {
+                boolean deleted = subtree.delete_item(item);
+                if (deleted && subtree.is_empty()){
+                    this.subtrees.remove(subtree);
+                    return true;
+                }
+                else if (deleted){
+                    return true;
+                }
+                else{
+                    continue;
+                }
+            }
+            return false;
+        }
+    }
+
+    private void delete_root() {
+        if (this.subtrees == null){
+            this.root = null;
+        }
+        else{
+            Tree chosen_subtree = this.subtrees.remove(this.subtrees.size() - 1);
+            this.root = chosen_subtree.root;
+            this.subtrees.addAll(chosen_subtree.subtrees);
+        }
+    }
+
+    private int extract_leaf(){
+        if (this.subtrees == null){
+            int old_root = this.root;
+            this.root = null;
+            return old_root;
+        }
+        else{
+            int leaf = this.subtrees.get(0).extract_leaf();
+            if (this.subtrees.get(0).is_empty()){
+                this.subtrees.remove(this.subtrees.size() - 1);
+            }
+            return leaf;
+        }
+    }
+
+    public boolean insert_child(int item, int parent) {
+        if (this.is_empty()){
+            return false;
+        }
+        else if (this.root == parent){
+            this.subtrees.add(new Tree(item, null));
+            return true;
+        }
+        else{
+            for (Tree subtree: this.subtrees){
+                if (subtree.insert_child(item, parent)){
+                    return true;
+                }
+            }
+            return false;
         }
     }
 }
